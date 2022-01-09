@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spaceship shooter</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class='login' id='login'>
+        <form id='login__form' class='login-form'>
+            <h2 class='title'>Start a Game</h2>
+            <label for='name'>Name:</label>
+            <input type='text' class='input' id='name' autofocus />
+            
+            <div class="login__buttons">
+                <button id='load' type='button' class='btn'>Load</button>
+                <button type='submit' class='btn'>Start</button>
+            </div>
+        </form>
+    </div>    
+    <div id='end-of-game' class="end-of-game">
+        <form class='end-of-game__form'>
+            <div id='next-level'>
+                <h2 id='win-text' class='title'></h2>
+                <p id='next-level__text' class='big-score'></p>
+                <button type='button' id='next-level-btn' class='btn'>Next Level</button>
+            </div>
+            <div id='lose' class='lose'>
+                <h2 id='lose-text' class='title'></h2>
+                <button id='restart' type='button' class='btn'>Restart</button>
+            </div>
+        </form>
+    </div>
+    <div class='game-stats'>
+        <div>
+            <span>Level: </span><span id='level'>0</span>
+        </div>
+        <div>
+            <span>Score: </span><span id='score'>0</span>
+        </div>
+        <div>
+            <span>Life: </span><span id='lifes'>0</span>
+        </div>
+        <div>
+            <span>Record: </span><span id='record'>0</span>
+        </div>
+    </div>
+    <canvas id='canvas'></canvas>
+    <script src="js/levels.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/howler.core.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/bullet.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
