@@ -1,140 +1,112 @@
 'use strict'
 
 const main = {
-    stopGame: true,
+    backgroundY: 0,
     start: () => {
-        main.gameLost = false
-        main.endOfLevel = false
-        init.start()
+        /** Ocultamos los marcos del menú para arrancar el juego */
+        endOfGameElement.style.display = 'none'
+        startElement.style.display = 'none'
+        gameLost = false
+
+        music.play()
+
+        /** Cargamos el récord si lo hay */
+        if (localStorage.getItem(username)) {
+            bigScore = parseInt(localStorage.getItem(username))
+        }
+        score = 0
+        scoreElement.innerHTML = score
+        recordElement.innerHTML = bigScore
+        main.backgroundY = -canvas.height
+
         player.start()
-        player.topRight = canvasWidth
         enemies.start()
         enemies.spawnEnemies()
-        main.stopGame = false
-        enemies.gameStopped = false
         main.drawStats()
-    },
-    save: () => {
-        console.log('bigScore', bigScore)
-        const data = {
-            bigScore: Math.max(score, bigScore),
-            level: level + 1,
+
+        if (enemies.listOfEnemies.length > 0) {
+            enemies.killAllEnemies()
         }
-        localStorage.setItem(name, JSON.stringify(data))
+    },
+    saveRecord: () => {
+        localStorage.setItem(username, Math.max(score, bigScore))
+    },
+    drawBackground: () => {
+        context.drawImage(
+            background,
+            0,
+            main.backgroundY,
+            2 * canvas.width,
+            2 * canvas.height
+        )
+    },
+    update: () => {
+        main.backgroundY = main.backgroundY + backgroundSpeed
+        if (main.backgroundY === 0) main.backgroundY = -canvas.height
     },
     drawStats: () => {
         scoreElement.innerHTML = score
-        lifesElement.innerHTML = lifes
-        levelElement.innerHTML = level
         recordElement.innerHTML = bigScore
     },
-    drawEndOfGame: result => {
-        endOfGame.style.display = 'flex'
-        if (result === 'endOfLevel') {
-            lose.style.display = 'none'
-            nextLevel.style.display = 'block'
-            winText.innerHTML = 'You win!!'
-            nextLevelText.innerHTML = `Total Score: ${score}`
-        } else {
-            nextLevel.style.display = 'none'
-            lose.style.display = 'block'
-            loseText.innerHTML = 'You lose!!'
-        }
-        enemies.gameStopped = true
+    drawEndOfGame: () => {
+        endOfGameElement.style.display = 'flex'
+        endOfGameTextElement.innerHTML = 'End of Game!'
+        endOfGameTotalScoreElement.innerHTML = `${score} points.`
     },
     refreshCanvas: () => {
-        context.clearRect(0, 0, canvasWidth, canvasHeight)
+        context.clearRect(0, 0, canvas.width, canvas.height)
     },
     loop: () => {
-        if (!main.stopGame) {
+        if (!gameLost) {
             requestAnimationFrame(main.loop)
         }
 
         main.refreshCanvas()
-        player.update()
+        main.drawBackground()
+        main.update()
         player.draw()
         enemies.draw()
+        player.update()
 
-        if (player.playerKilled || enemies.endSpawningEnemies) {
-            enemies.killAllEnemies()
-            if (player.playerKilled) {
-                gameLostSound.play()
-                main.start()
-                main.drawEndOfGame('lose')
-            } else {
-                endOfLevelSound.play
-                main.start()
-                main.drawEndOfGame('endOfLevel')
-
-                /** Guardamos el récord */
-                main.save()
+        if (player.playerKilled) {
+            main.saveRecord()
+            if (enemies.listOfEnemies.length > 0) {
+                enemies.killAllEnemies()
             }
+            gameLostSound.play()
+            main.drawEndOfGame()
+
             cancelAnimationFrame(main.loop)
-            main.stopGame = true
+            gameLost = true
         }
         main.drawStats()
     },
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    login.style.display = 'flex'
-    endOfGame.style.display = 'none'
+    startElement.style.display = 'flex'
+    endOfGameElement.style.display = 'none'
+    init.start()
 })
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-    canvasWidth = canvas.width
-    canvasHeight = canvas.height
     main.refreshCanvas()
     player.topRight = window.innerWidth
 })
 
-loginForm.addEventListener('submit', e => {
-    e.preventDefault()
-    if (name.value !== '') {
-        login.style.display = 'none'
+startFormElement &&
+    startFormElement.addEventListener('submit', e => {
+        e.preventDefault()
+        if (username.value !== '') {
+            main.start()
+            main.loop()
+        }
+    })
 
-        name = nameElement.value
-        bigScore = 0
-        level = 1
-
-        main.start()
-        main.loop()
-    }
-})
-
-load.addEventListener('click', () => {
-    const data = init.loadLevel(nameElement.value)
-    if (data) {
-        name = nameElement.value
-        bigScore = data.bigScore
-        score = bigScore
-        level = data.level
-
-        main.start()
-        main.loop()
-    }
-})
-
-restart &&
-    restart.addEventListener('click', () => {
-        gameLostSound.stop()
+restartElement &&
+    restartElement.addEventListener('click', () => {
         main.start()
         main.loop()
     })
-
-nextLevelButton.addEventListener('click', () => {
-    /** El nuevo nivel ya se habrá guardado al completar el anterior */
-    const data = init.loadLevel(nameElement.value)
-
-    if (data) {
-        name = nameElement.value
-        bigScore = data.bigScore
-        score = bigScore
-        level = data.level
-
-        main.start()
-        main.loop()
-    }
-})

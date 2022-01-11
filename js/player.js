@@ -17,17 +17,18 @@ const player = {
     bulletOffsetX: 0,
     playerKilled: false,
     start: () => {
+        player.topRight = canvas.width
+        player.playerKilled = false
         player.shipImage = new Image()
         player.shipImage.src = 'img/basic_ship.png'
         player.positionX =
-            parseInt(canvasWidth / 2) - parseInt(player.imageWidth / 2)
-        player.positionY = parseInt(canvasHeight - player.positionYOffset)
+            parseInt(canvas.width / 2) - parseInt(player.imageWidth / 2)
+        player.positionY = parseInt(canvas.height - player.positionYOffset)
         player.topMovement = 20
         player.bulletOffsetX = parseInt(player.imageWidth / 2)
         player.shooting = false
-        player.playerKilled = false
 
-        document.addEventListener('keydown', player.doAction)
+        document.addEventListener('keydown', player.play)
         document.addEventListener('keyup', player.stop)
     },
     checkEnemyReached: () => {
@@ -44,7 +45,7 @@ const player = {
         enemies.killAllEnemies()
         player.playerKilled = true
     },
-    doAction: key => {
+    play: key => {
         switch (key.code) {
             case 'ArrowLeft':
                 player.left()
@@ -58,9 +59,7 @@ const player = {
         }
     },
     stop: key => {
-        if (key.code === 'Space') {
-            //player.shoot()
-        } else {
+        if (key.code !== 'Space') {
             if (
                 (key.code === 'ArrowLeft' && player.direction === 'L') ||
                 (key.code === 'ArrowRight' && player.direction === 'R')
@@ -102,21 +101,13 @@ const player = {
         if (player.shooting) {
             bullet.update()
         }
-
-        // let newBulletY = (bullet.positionY -= bullet.speed)
-        // if (player.shooting) {
-        //     if (newBulletY < 0) {
-        //         newBulletY = player.positionY
-        //         player.shooting = false
-        //     }
-        // }
-        // bullet.update(player.bulletX, newBulletY)
     },
     draw: () => {
         const enemyReachedIndex = enemies.checkPlayerReached(
             player.positionX,
             player.positionY,
-            player.imageWidth
+            player.imageWidth,
+            player.imageHeight
         )
 
         player.isReachedByEnemy = enemyReachedIndex >= 0
@@ -148,19 +139,7 @@ const player = {
                 bullet.draw(positionX)
             }
         } else {
-            enemies.killEnemy(enemyReachedIndex)
-            lifes--
-            if (score >= 150) {
-                score -= 150
-            } else {
-                score = 0
-            }
-
-            playerReachedScound.play()
-
-            if (lifes === 0) {
-                player.die()
-            }
+            player.die()
         }
     },
 }

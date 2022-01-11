@@ -16,7 +16,7 @@ body{
     font-family: 'Orbitron'; 
 }
 
-.login{
+.start{
     position: fixed;
     display: flex;
     align-items: center;
@@ -26,8 +26,9 @@ body{
     width: 500px;
     height: 300px;
     color: #E6F5F9;
-    top: calc((100% / 2) - 150px);
-    left: calc((100% / 2) - 250px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 200;
 }
 
@@ -37,7 +38,7 @@ body{
     font-size: 40px;
 }
 
-.login__form{
+.start_form{
     margin-left: auto;
     margin-right: auto;
     color: #E6F5F9;
@@ -51,12 +52,6 @@ body{
     width: 300px;
 }
 
-.login__buttons{
-    display: flex;
-    gap: 20px;
-    justify-content:space-between;
-}
-
 .btn{
     display: block;
     margin-top: 30px;
@@ -66,9 +61,6 @@ body{
     width: 200px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.btn:hover{
     cursor: pointer;
 }
 
@@ -77,7 +69,6 @@ body{
     height: 100%;
     background-repeat: no-repeat;
     background-size: cover;
-    opacity: 0.95;
 }
 
 .game-stats{
@@ -102,21 +93,22 @@ body{
     border: 2px solid #E6F5F9;
     background-color: transparent;
     width: 500px;
-    height: 200px;
+    height: 225px;
     color: #E6F5F9;
-    top: calc((100% / 2) - 100px);
-    left: calc((100% / 2) - 250px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 200;
 }
 
-.end-of-game__form{
+.end-of-game-form{
     margin-left: auto;
     margin-right: auto;
     color: #E6F5F9;
 }
 
 .big-score{
-    font-size: 20px;
+    font-size: 25px;
     margin-top: -20px;
 }
 

@@ -52,31 +52,27 @@ const ExplosionParticle = function (x, y, size, speedX, speedY) {
 const enemies = {
     listOfEnemies: [],
     particles: [],
-    gameStopped: false,
+    stopSpawn: false,
     start: () => {
         enemies.listOfEnemies = []
         enemies.particles = []
-        enemies.endSpawningEnemies = false
     },
     spawnEnemies: () => {
-        let counter = 0
         const timer = setInterval(() => {
             const initialX =
-                100 + Math.floor(Math.random() * (canvasWidth - 200))
+                100 + Math.floor(Math.random() * (canvas.width - 200))
 
             let enemySpeed = Math.random()
-            if (enemySpeed <= 0.1) {
-                enemySpeed = 0.1
+            if (enemySpeed <= 0.2) {
+                enemySpeed = 0.2
             }
             if (enemySpeed >= 0.9) {
                 enemySpeed = 0.9
             }
-            counter++
 
             enemies.createEnemy(initialX, 0, 'img/asteroid01.png', enemySpeed)
 
-            if (enemies.gameStopped || counter === maxEnemiesSpawned) {
-                enemies.endSpawningEnemies = true
+            if (gameLost) {
                 enemies.listOfEnemies = []
                 enemies.particles = []
                 clearInterval(timer)
@@ -91,11 +87,10 @@ const enemies = {
             const positionX = enemy.positionX
             const positionY = (enemy.positionY += enemy.speed)
 
-            // console.log(positionX, positionY)
             enemy.update(positionX, positionY)
         })
     },
-    checkPlayerReached: (playerX, playerY, playerWidth) => {
+    checkPlayerReached: (playerX, playerY, playerWidth, playerHeight) => {
         let enemyReachingIndex = -1
         enemies.listOfEnemies.every((enemy, index) => {
             /* Comprobamos que la coordenada y del enemigo sea mayor que la
@@ -103,6 +98,8 @@ const enemies = {
                coordenada x del enemigo y x + ancho */
             if (
                 playerY <= enemy.positionY + parseInt(enemy.height / 2) &&
+                playerY + playerHeight >=
+                    enemy.positionY - parseInt(enemy.height / 2) &&
                 enemy.positionX >= playerX &&
                 enemy.positionX <= playerX + playerWidth
             ) {
@@ -146,10 +143,8 @@ const enemies = {
     },
     draw: () => {
         enemies.move()
-        enemies.listOfEnemies.forEach((enemy, index) => {
-            if (enemy.positionY > canvas.height) {
-                enemies.killEnemy(index)
-            } else {
+        enemies.listOfEnemies.forEach(enemy => {
+            if (enemy.positionY <= canvas.height) {
                 enemy.draw()
             }
         })
