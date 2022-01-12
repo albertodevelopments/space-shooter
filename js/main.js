@@ -65,10 +65,12 @@ const main = {
         main.drawBackground()
         main.update()
         player.draw()
+
         enemies.draw()
         player.update()
 
         if (player.playerKilled) {
+            console.log(username)
             main.saveRecord()
             if (enemies.listOfEnemies.length > 0) {
                 enemies.killAllEnemies()
@@ -99,7 +101,9 @@ window.addEventListener('resize', () => {
 startFormElement &&
     startFormElement.addEventListener('submit', e => {
         e.preventDefault()
-        if (username.value !== '') {
+        if (nameElement.value !== '') {
+            username = nameElement.value
+            console.log(username)
             main.start()
             main.loop()
         }

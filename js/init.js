@@ -48,7 +48,6 @@ const init = {
         canvas.height = window.innerHeight
         score = 0
         bigScore = 0
-        username = nameElement.value
         background = new Image()
         background.src = '../img/background.png'
 
