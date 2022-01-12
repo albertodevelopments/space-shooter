@@ -70,7 +70,6 @@ const main = {
         player.update()
 
         if (player.playerKilled) {
-            console.log(username)
             main.saveRecord()
             if (enemies.listOfEnemies.length > 0) {
                 enemies.killAllEnemies()
@@ -103,7 +102,6 @@ startFormElement &&
         e.preventDefault()
         if (nameElement.value !== '') {
             username = nameElement.value
-            console.log(username)
             main.start()
             main.loop()
         }
